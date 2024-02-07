@@ -60,7 +60,6 @@ def make_move(state: ConnectFourState, env: ConnectFour) -> int:
 
     # player = state.player_turn
     v, m = max_value(state, env, 0, 18)
-    actions = env.get_actions(state)
-    return actions[0]
+    return m
 
     pass
