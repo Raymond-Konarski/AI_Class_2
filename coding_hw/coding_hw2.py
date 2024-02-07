@@ -2,6 +2,30 @@ from environments.connect_four import ConnectFourState, ConnectFour
 import numpy as np
 
 
+def heuristic(state: ConnectFourState) -> int:
+    pass
+
+
+# def negascout(state: ConnectFourState, depth, a, b, turn: bool, env: ConnectFour):
+#     if depth == 0 or state.is_terminal():
+#         return (-heuristic(state)) if turn else heuristic(state)
+#     first = True
+#     move = -1
+#     for action in env.get_actions(state):
+#         if first:
+#             score = -negascout(env.next_state(state, action), depth - 1, -b, -a, ~turn, env)
+#             first = False
+#         else:
+#             score = negascout(env.next_state(state, action), depth - 1, -a - 1, -a, ~turn, env)
+#             if a < score < b:
+#                 score = -negascout(env.next_state(state, action), depth - 1, -b, -a, ~turn, env)
+#         a = max(a, score)
+#         if a >= b:
+#             move = action
+#             break
+#     return move
+
+
 def min_value(state: ConnectFourState, env: ConnectFour, depth: int, max_depth: int) -> [int, int]:
     if env.is_terminal(state): return env.utility(state), None
     if depth >= max_depth: pass  # TODO: this
