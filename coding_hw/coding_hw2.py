@@ -16,37 +16,37 @@ class Node:
 def heuristic(state: ConnectFourState) -> int:
     lines: List[np.ndarray] = state.get_lines()
     turn = state.player_turn
+    val = 0
     for line in lines:
-        val = 0
         if len(line) < 4: continue
         for idx, tile in enumerate(line):
             tmp1 = 0
             tmp2 = 0
             if tile > 0:
-                tmp1 = tmp1 + 1
+                tmp1 += 1
                 tmp2 = 0
             elif tile == 0:
                 tmp1 = 0
                 tmp2 = 0
             elif tile < 0:
                 tmp1 = 0
-                tmp2 = tmp2 + 1
-            val = tmp1 - tmp2
-            # if tmp1 > 0:
-            #     val = val + tmp1 * 3
-            #     # if idx - 2 > 0:
-            #     #     val = val + 2
-            #     # if idx + 1 < len(line):
-            #     #     val = val + 2
-            # if tmp2 > 0:
-            #     val = val - tmp2 * 3
-            #     # if idx - 2 > 0:
-            #     #     val = val - 5
-            #     # if idx + 1 < len(line):
-            #     #     val = val + 2
-        return val
+                tmp2 += 1
+            # val += tmp1 - tmp2
+            if tmp1 > 0:
+                val += (tmp1 * 3)
+                # if idx - 2 > 0:
+                #     val = val + 2
+                # if idx + 1 < len(line):
+                #     val = val + 2
+            if tmp2 > 0:
+                val -= (tmp2 * 3)
+                # if idx - 2 > 0:
+                #     val = val - 5
+                # if idx + 1 < len(line):
+                #     val = val + 2
+    return val
 
-        # if idx == 0 or idx == len(line): pass  # TODO
+    # if idx == 0 or idx == len(line): pass  # TODO
     pass
 
 
@@ -104,7 +104,7 @@ def make_move(state: ConnectFourState, env: ConnectFour) -> int:
     """
 
     # player = state.player_turn
-    v, m = max_value(state, env, 0, 4)
+    v, m = max_value(state, env, 0, 3)
     return m
 
     pass
