@@ -18,8 +18,8 @@ def heuristic(state: ConnectFourState) -> int:
     turn = state.player_turn
     for line in lines:
         val = 0
-        for idx, c in enumerate(line):
-            tile = c
+        if len(line) < 4: continue
+        for idx, tile in enumerate(line):
             tmp1 = 0
             tmp2 = 0
             if tile > 0:
@@ -31,18 +31,19 @@ def heuristic(state: ConnectFourState) -> int:
             elif tile < 0:
                 tmp1 = 0
                 tmp2 = tmp2 + 1
-            if tmp1 > 0:
-                val = val + tmp1
-                if idx - 2 > 0:
-                    val = val + 2
-                if idx + 1 < len(line):
-                    val = val + 2
-            if tmp2 > 0:
-                val = val - tmp2
-                if idx - 2 > 0:
-                    val = val - 5
-                if idx + 1 < len(line):
-                    val = val + 2
+            val = tmp1 - tmp2
+            # if tmp1 > 0:
+            #     val = val + tmp1 * 3
+            #     # if idx - 2 > 0:
+            #     #     val = val + 2
+            #     # if idx + 1 < len(line):
+            #     #     val = val + 2
+            # if tmp2 > 0:
+            #     val = val - tmp2 * 3
+            #     # if idx - 2 > 0:
+            #     #     val = val - 5
+            #     # if idx + 1 < len(line):
+            #     #     val = val + 2
         return val
 
         # if idx == 0 or idx == len(line): pass  # TODO
