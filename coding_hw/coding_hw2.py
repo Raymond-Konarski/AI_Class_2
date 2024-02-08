@@ -1,21 +1,15 @@
-# https://www.scirp.org/journal/PaperInformation?PaperID=90972&#abstract
-from typing import Optional, List
+# Raymond Konarski 2024
+# https://www.scirp.org/journal/PaperInformation?PaperID=90972&#abstract heuristic ideas
+# http://blog.gamesolver.org/solving-connect-four/01-introduction/ didn't really help...
+# https://en.wikipedia.org/wiki/Negamax#Negamax_with_alpha_beta_pruning great images to visualize alpha-beta pruning
+from typing import Optional, List, Dict
 
 from environments.connect_four import ConnectFourState, ConnectFour
 import numpy as np
 
 
-class Node:
-    def __init__(self, state: ConnectFourState, score: int, parent, previous_move: int):
-        self.state = state
-        self.score: int = score
-        self.parent: Optional[Node] = parent
-        self.previous_move = previous_move
-
-
 def heuristic(state: ConnectFourState) -> int:
     lines: List[np.ndarray] = state.get_lines()
-    turn = state.player_turn
     val = 0
     for line in lines:
         if len(line) < 4: continue
@@ -31,67 +25,22 @@ def heuristic(state: ConnectFourState) -> int:
             elif tile < 0:
                 tmp1 = 0
                 tmp2 += 1
-            # val += tmp1 - tmp2
-            if tmp1 > 0:
-                val += (tmp1 * 3)
-                # if idx - 2 > 0:
-                #     val = val + 2
-                # if idx + 1 < len(line):
-                #     val = val + 2
-            if tmp2 > 0:
-                val -= (tmp2 * 3)
-                # if idx - 2 > 0:
-                #     val = val - 5
-                # if idx + 1 < len(line):
-                #     val = val + 2
+            val += tmp1 - tmp2
     return val
 
-    # if idx == 0 or idx == len(line): pass  # TODO
-    pass
 
-
-# def negascout(node: Node, depth, a, b, turn: bool, env: ConnectFour, depth_limit: int) -> [int, int]:
-#     state = node.state
-#     if depth == 0 or state.is_terminal(): return (-heuristic(state)) if turn else heuristic(state)
-#     if depth >= depth_limit: pass  # TODO: this
-#     first = True
-#     move = -1
-#     for action in env.get_actions(state):
-#         if first:
-#             score = -negascout(env.next_state(state, action), depth - 1, -b, -a, ~turn, env, depth_limit)
-#             first = False
-#         else:
-#             score = negascout(env.next_state(state, action), depth - 1, -a - 1, -a, ~turn, env, depth_limit)
-#             if a < score < b:
-#                 score = -negascout(env.next_state(state, action), depth - 1, -b, -a, ~turn, env, depth_limit)
-#         a = max(a, score)
-#         if a >= b:
-#             move = action
-#             break
-#     return a, move
-
-
-def min_value(state: ConnectFourState, env: ConnectFour, depth: int, max_depth: int) -> [float, float]:
-    if env.is_terminal(state): return env.utility(state), -1
-    if depth >= max_depth: heuristic(state), -1  # TODO: this
-    v = np.inf
-    m = -1
-    for a in env.get_actions(state):
-        v2, a2 = max_value(env.next_state(state, a), env, depth + 1, max_depth)
-        if v2 < v:
-            v, m = v2, a
-    return v, m
-
-
-def max_value(state: ConnectFourState, env: ConnectFour, depth: int, max_depth: int) -> [float, float]:
-    if env.is_terminal(state): return env.utility(state), -1
-    if depth >= max_depth: return heuristic(state), -1  # TODO: this
+def negamax(state: ConnectFourState, env: ConnectFour, depth: int, turn: int, a, b) -> [float, int]:
+    if state.is_terminal:
+        return turn * env.utility(state), -1
+    elif depth == 0:
+        return turn * heuristic(state), -1
     v = -np.inf
-    m = -1
-    for a in env.get_actions(state):
-        v2, a2 = min_value(env.next_state(state, a), env, depth + 1, max_depth)
-        if v2 > v:
-            v, m = v2, a
+    m = 2
+    for action in env.get_actions(state):
+        v2, _ = negamax(env.next_state(state, action), env, depth - 1, -turn, -b, -a)
+        if -v2 > v:
+            v, m = -v2, action
+        if a >= b: break
     return v, m
 
 
@@ -103,8 +52,9 @@ def make_move(state: ConnectFourState, env: ConnectFour) -> int:
     :return: the action to take
     """
 
-    # player = state.player_turn
-    v, m = max_value(state, env, 0, 3)
+    # tTable: Dict[ConnectFourState, int] = {} # how do i even memoize with alpha-beta pruning...
+    _, m = negamax(state, env, 5, state.player_turn, -np.inf, np.inf)
+
     return m
 
     pass
