@@ -1,0 +1,11 @@
+
+.idea/AI_Class_2.iml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+coding_hw/__pycache__/coding_hw2.cpython-37.pyc
+environments/__pycache__/__init__.cpython-37.pyc
+environments/__pycache__/connect_four.cpython-37.pyc
+environments/__pycache__/environment_abstract.cpython-37.pyc
+visualizer/__pycache__/connect_four_visualizer.cpython-37.pyc

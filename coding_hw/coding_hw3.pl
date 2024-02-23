@@ -1,3 +1,5 @@
+% Raymond Konarski 2024 CSCE580
+
 print_state([A,B,C,D,E,F,G,H,I]) :- maplist(write, [A,B,C,"\n",D,E,F,"\n",G,H,I]).
 
 seq([X,Y,Z,_,_,_,_,_,_], [X,Y,Z], [0,1,2]).
@@ -24,3 +26,35 @@ in_row_3(S) :- seq(S, [X,Y,Z], _), X=x, Y=x,Z=x.
 valid_elem(E) :- E=o.
 valid_elem(E) :- E=b.
 valid_elem(E) :- E=x.
+
+% simply check each permutation and ensure the blanks do not share a position
+two_ways_x(S) :- 
+    valid_state(S),
+
+    (
+        (seq(S, [x,x,b], [_,_,C]), seq(S, [x,x,b], [_,_,F])); 
+        (seq(S, [x,x,b], [_,_,C]), seq(S, [x,b,x], [_,F,_])); 
+        (seq(S, [x,x,b], [_,_,C]), seq(S, [b,x,x], [F,_,_])); 
+
+        (seq(S, [x,b,x], [_,C,_]), seq(S, [x,x,b], [_,_,F])); 
+        (seq(S, [x,b,x], [_,C,_]), seq(S, [x,b,x], [_,F,_])); 
+        (seq(S, [x,b,x], [_,C,_]), seq(S, [b,x,x], [F,_,_])); 
+
+        (seq(S, [b,x,x], [C,_,_]), seq(S, [x,x,b], [_,_,F])); 
+        (seq(S, [b,x,x], [C,_,_]), seq(S, [x,b,x], [_,F,_])); 
+        (seq(S, [b,x,x], [C,_,_]), seq(S, [b,x,x], [F,_,_]))  
+    ),
+
+    not(C=F),
+
+    print_state(S).
+
+% just nor all 2-in-a-row positions with an open blank...
+no_ways_x(S) :-
+    valid_state(S),
+    not(
+        seq(S, [x,x,b], _);
+        seq(S, [x,b,x], _);
+        seq(S, [b,x,x], _)        
+    ),
+    print_state(S).
